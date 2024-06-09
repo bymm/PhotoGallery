@@ -1,10 +1,14 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
-import project.view.icons.ButtonIconHelper;
-import project.view.components.*;
-import project.model.Photo;
-import project.view.renderers.PhotoListCellRenderer;
-import project.model.PhotoListModel;
+import S30173Baltovskyi.controller.loaders.ImageLoader;
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.model.PhotoListModel;
+import S30173Baltovskyi.view.components.MyButton;
+import S30173Baltovskyi.view.components.MyList;
+import S30173Baltovskyi.view.components.MyScrollPane;
+import S30173Baltovskyi.view.components.MyTextAreaNoWrap;
+import S30173Baltovskyi.view.icons.ButtonIconHelper;
+import S30173Baltovskyi.view.renderers.PhotoListCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +16,13 @@ import java.awt.*;
 public class CentralPanel extends JPanel {
     private JPanel colHeaderPanel;
     private MyTextAreaNoWrap curColTitle;
-    private MyLabel curColNumPhotos;
+    private MyTextAreaNoWrap curColNumPhotos;
     private MyButton editImageInfoButton;
     private MyButton removeImageButton;
     private MyButton addImageButton;
     private PhotoListModel photoListModel;
     private MyList<Photo> photoList;
+    private ImageLoader imageLoader;
 
 
     public CentralPanel() {
@@ -42,7 +47,7 @@ public class CentralPanel extends JPanel {
 
         curColTitle = new MyTextAreaNoWrap("");
         curColTitle.setPreferredSize(new Dimension(0,0));
-        curColNumPhotos = new MyLabel("");
+        curColNumPhotos = new MyTextAreaNoWrap("");
 
         colHeaderLeftPanel.add(curColTitle, BorderLayout.CENTER);
         colHeaderLeftPanel.add(curColNumPhotos, BorderLayout.SOUTH);
@@ -54,14 +59,14 @@ public class CentralPanel extends JPanel {
 
         editImageInfoButton = new MyButton("");
         editImageInfoButton.setVisible(false);
-        ButtonIconHelper.setIconOnButton(editImageInfoButton, "/project/view/icons/editIcon.png", 50, 50);
+        ButtonIconHelper.setIconOnButton(editImageInfoButton, "/S30173Baltovskyi/view/icons/editIcon.png", 50, 50);
 
         removeImageButton = new MyButton("");
         removeImageButton.setVisible(false);
-        ButtonIconHelper.setIconOnButton(removeImageButton, "/project/view/icons/removeIcon.png", 40, 40);
+        ButtonIconHelper.setIconOnButton(removeImageButton, "/S30173Baltovskyi/view/icons/removeIcon.png", 40, 40);
 
         addImageButton = new MyButton("");
-        ButtonIconHelper.setIconOnButton(addImageButton, "/project/view/icons/addIcon.png", 60, 60);
+        ButtonIconHelper.setIconOnButton(addImageButton, "/S30173Baltovskyi/view/icons/addIcon.png", 60, 60);
 
         addRemoveImageButtonsPanel.add(editImageInfoButton);
         addRemoveImageButtonsPanel.add(removeImageButton);
@@ -79,8 +84,9 @@ public class CentralPanel extends JPanel {
 
         photoListModel = new PhotoListModel();
         photoList = new MyList<>(photoListModel);
+        imageLoader = new ImageLoader(photoList);
 
-        photoList.setCellRenderer(new PhotoListCellRenderer());
+        photoList.setCellRenderer(new PhotoListCellRenderer(imageLoader));
         photoList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         photoList.setFixedCellHeight(200);
         photoList.setFixedCellWidth(200);
@@ -100,7 +106,7 @@ public class CentralPanel extends JPanel {
         return curColTitle;
     }
 
-    public MyLabel getCurColNumPhotos() {
+    public MyTextAreaNoWrap getCurColNumPhotos() {
         return curColNumPhotos;
     }
 
@@ -122,5 +128,9 @@ public class CentralPanel extends JPanel {
 
     public PhotoListModel getPhotoListModel() {
         return photoListModel;
+    }
+
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 }

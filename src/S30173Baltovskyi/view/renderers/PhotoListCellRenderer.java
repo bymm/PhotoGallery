@@ -1,32 +1,42 @@
-package project.view.renderers;
+package S30173Baltovskyi.view.renderers;
 
-import project.model.Photo;
+import S30173Baltovskyi.controller.loaders.ImageLoader;
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.view.components.MyLabel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PhotoListCellRenderer extends DefaultListCellRenderer {
-    @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+public class PhotoListCellRenderer extends MyLabel implements ListCellRenderer<Photo> {
+    private final ImageLoader imageLoader;
 
-        if (value instanceof Photo photo) {
-            c.setText(null);
-            c.setPreferredSize(new Dimension(200, 200));
-            c.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            c.setIcon(photo.resizeImageIcon(190,190));
+    public PhotoListCellRenderer(ImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList list, Photo photo, int index, boolean isSelected, boolean cellHasFocus) {
+
+        ImageIcon imageIcon = imageLoader.getImageIcon(photo);
+        if (imageIcon == null) {
+            setText("Loading...");
+            setIcon(null);
+        }
+        else {
+            setText(null);
+            setIcon(imageIcon);
         }
 
         if (isSelected) {
-            c.setBorder(BorderFactory.createCompoundBorder(
+            setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(new Color(100, 150, 250), 3),
                     BorderFactory.createEmptyBorder(5, 5, 5, 5)
             ));
         } else {
-            c.setBackground(new Color(45, 45, 48));
-            c.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            c.setOpaque(true);
+            setBackground(new Color(45, 45, 48));
+            setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            setOpaque(true);
         }
-        return c;
+        return this;
     }
 }

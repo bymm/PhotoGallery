@@ -1,9 +1,9 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
-import project.view.icons.ButtonIconHelper;
-import project.view.components.MyButton;
-import project.view.components.MyLabel;
-import project.view.components.MyTextField;
+import S30173Baltovskyi.view.components.MyButton;
+import S30173Baltovskyi.view.components.MyLabel;
+import S30173Baltovskyi.view.components.MyTextField;
+import S30173Baltovskyi.view.icons.ButtonIconHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,14 +56,14 @@ public class TopPanel extends JPanel {
     private void createCollectionButtons() {
         renameColButton = new MyButton("");
         renameColButton.setVisible(false);
-        ButtonIconHelper.setIconOnButton(renameColButton, "/project/view/icons/editIcon.png", 50, 50);
+        ButtonIconHelper.setIconOnButton(renameColButton, "/S30173Baltovskyi/view/icons/editIcon.png", 50, 50);
 
         removeColButton = new MyButton("");
         removeColButton.setVisible(false);
-        ButtonIconHelper.setIconOnButton(removeColButton, "/project/view/icons/removeIcon.png", 40, 40);
+        ButtonIconHelper.setIconOnButton(removeColButton, "/S30173Baltovskyi/view/icons/removeIcon.png", 40, 40);
 
         addColButton = new MyButton("");
-        ButtonIconHelper.setIconOnButton(addColButton, "/project/view/icons/addIcon.png", 60, 60);
+        ButtonIconHelper.setIconOnButton(addColButton, "/S30173Baltovskyi/view/icons/addIcon.png", 60, 60);
 
 
         add(Box.createHorizontalGlue());

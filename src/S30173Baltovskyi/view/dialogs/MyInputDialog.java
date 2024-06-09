@@ -1,7 +1,7 @@
-package project.view.dialogs;
+package S30173Baltovskyi.view.dialogs;
 
-import project.view.components.MyLabel;
-import project.view.components.MyTextField;
+import S30173Baltovskyi.view.components.MyLabel;
+import S30173Baltovskyi.view.components.MyTextField;
 
 import javax.swing.*;
 import java.awt.*;

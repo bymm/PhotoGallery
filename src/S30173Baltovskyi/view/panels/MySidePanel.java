@@ -1,6 +1,6 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
-import project.view.components.MyLabel;
+import S30173Baltovskyi.view.components.MyLabel;
 
 import javax.swing.*;
 import java.awt.*;

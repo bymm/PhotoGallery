@@ -1,21 +1,18 @@
-package S30173Baltovskyi.controller.photoprocessors;
+package S30173Baltovskyi.controller;
 
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.model.PhotoCollection;
 import S30173Baltovskyi.view.components.MyButton;
 import S30173Baltovskyi.view.components.MyLabel;
 import S30173Baltovskyi.view.components.MyTextAreaNoWrap;
 import S30173Baltovskyi.view.dialogs.MyBaseDialog;
 import S30173Baltovskyi.view.panels.CentralPanel;
 import S30173Baltovskyi.view.panels.RightPanel;
-import S30173Baltovskyi.model.Photo;
-import S30173Baltovskyi.model.PhotoCollection;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -46,17 +43,29 @@ public class FullScreenPhotoController {
         this.mainCentralPanel = mainCentralPanel;
         this.mainRightPanel = mainRightPanel;
 
-        setupFullScreenKey();
+        setupFullScreenKeys();
     }
 
-    private void setupFullScreenKey() {
+    private void setupFullScreenKeys() {
         JList<Photo> photoList = mainCentralPanel.getPhotoList();
 
+        // Open full screen when 'F' is pressed
         photoList.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F"), "launchFullScreen");
         photoList.getActionMap().put("launchFullScreen", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 launchFullScreenPhotoViewer();
+            }
+        });
+
+        // Open full screen on double click
+        photoList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    int index = photoList.locationToIndex(e.getPoint());
+                    if (index != -1) launchFullScreenPhotoViewer();
+                }
             }
         });
     }
@@ -83,12 +92,12 @@ public class FullScreenPhotoController {
         curPhoto = photos.get(curIndex);
 
         slideFrame = new JFrame("Collection: " + selectedCollection.getTitle());
-        createTopPanel();
         createCenterPanel();
+        createTopPanel();
         createBottomPanel();
 
-        slideFrame.add(thisTopPanel, BorderLayout.NORTH);
         slideFrame.add(thisCenterPanel, BorderLayout.CENTER);
+        slideFrame.add(thisTopPanel, BorderLayout.NORTH);
         slideFrame.add(thisBottomPanel, BorderLayout.SOUTH);
 
         slideFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -122,7 +131,8 @@ public class FullScreenPhotoController {
         thisCenterPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                calculateDimsAndResize(curPhoto, curPhotoLabel);
+                if (thisCenterPanel.getComponentCount() > 1 && thisCenterPanel.getHeight() > 1)
+                    calculateDimsAndResize(curPhoto, curPhotoLabel);
             }
         });
     }
@@ -213,12 +223,10 @@ public class FullScreenPhotoController {
     }
 
     private void calculateDimsAndResize(Photo photo, JLabel label) {
-
         // Get view width, height
         int viewWidth = thisCenterPanel.getWidth();
         int viewHeight = thisCenterPanel.getHeight();
 
-        // Get photo width, height, aspect ratio
         new ImageLoadingWorker(photo, label, viewWidth, viewHeight).execute();
     }
 
@@ -236,12 +244,11 @@ public class FullScreenPhotoController {
         }
 
         @Override
-        protected BufferedImage doInBackground() throws Exception {
+        protected BufferedImage doInBackground() {
             try {
                 return ImageIO.read(new File(photo.getImagePath()));
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -249,7 +256,7 @@ public class FullScreenPhotoController {
 
         @Override
         protected void done() {
-            BufferedImage bufferedImage = null;
+            BufferedImage bufferedImage;
             try {
                 bufferedImage = get();
 
@@ -264,7 +271,7 @@ public class FullScreenPhotoController {
                     return;
                 }
 
-                // Need to resize
+                // Is needed to be resized
                 int newWidth, newHeight;
                 if (imageWidth / (double) viewWidth > imageHeight / (double) viewHeight) {
                     newWidth = viewWidth;

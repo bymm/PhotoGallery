@@ -1,7 +1,7 @@
-package project.model;
+package S30173Baltovskyi.model;
 
-import project.controller.listeners.PhotoChangeListener;
-import project.controller.listeners.PhotoCollectionChangeListener;
+import S30173Baltovskyi.controller.listeners.PhotoChangeListener;
+import S30173Baltovskyi.controller.listeners.PhotoCollectionChangeListener;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -71,8 +71,7 @@ public class PhotoCollection implements Serializable, PhotoChangeListener {
     }
 
     public void clearCache() {
-        for (Photo photo : photos)
-            photo.clearResizedIconsCache();
+        photos.clear();
     }
 
     private void notifyCollectionChangeListener() {

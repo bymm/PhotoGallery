@@ -1,4 +1,4 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
 import javax.swing.*;
 import java.awt.*;

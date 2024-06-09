@@ -1,8 +1,9 @@
-package project.view.dialogs;
+package S30173Baltovskyi.view.dialogs;
 
-import project.view.components.MyTextAreaNoWrap;
-import project.view.components.MyTextField;
-import project.model.Photo;
+import S30173Baltovskyi.controller.loaders.ImageLoader;
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.view.components.MyTextAreaNoWrap;
+import S30173Baltovskyi.view.components.MyTextField;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,15 +11,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class MyEditImageInfoDialog extends MyBaseDialog {
+    private final ImageLoader imageLoader;
     private final Photo photo;
     private MyTextField titleTextField;
     private MyTextField tagsTextField;
     private MyTextField dateTextField;
     private MyTextField descriptionTextField;
 
-    public MyEditImageInfoDialog(Component parentFrame, Photo photo) {
+    public MyEditImageInfoDialog(Component parentFrame, Photo photo, ImageLoader imageLoader) {
         super(parentFrame, "Edit Image Info", true);
         this.photo = photo;
+        this.imageLoader = imageLoader;
+
         JPanel mainPanel = createMainPanel();
         add(mainPanel, BorderLayout.CENTER);
     }
@@ -36,7 +40,7 @@ public class MyEditImageInfoDialog extends MyBaseDialog {
         gbc.gridy = 0;
 
         // Icon
-        ImageIcon icon = photo.resizeImageIcon(190, 190);
+        ImageIcon icon = imageLoader.getImageIcon(photo);
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setPreferredSize(new Dimension(190, 190));
         gbc.gridwidth = 2;

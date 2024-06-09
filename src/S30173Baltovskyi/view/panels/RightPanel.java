@@ -1,10 +1,10 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
-import project.view.components.MyList;
-import project.view.renderers.PhotoCollectionListCellRenderer;
-import project.model.PhotoCollectionListModel;
-import project.view.components.MyScrollPane;
-import project.model.PhotoCollection;
+import S30173Baltovskyi.model.PhotoCollection;
+import S30173Baltovskyi.model.PhotoCollectionListModel;
+import S30173Baltovskyi.view.components.MyList;
+import S30173Baltovskyi.view.components.MyScrollPane;
+import S30173Baltovskyi.view.renderers.PhotoCollectionListCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class RightPanel extends MySidePanel {
         add(collectionScroll);
     }
 
-    public JList<PhotoCollection> getCollectionList() {
+    public MyList<PhotoCollection> getCollectionList() {
         return collectionList;
     }
 

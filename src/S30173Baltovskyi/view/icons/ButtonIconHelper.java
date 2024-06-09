@@ -1,8 +1,7 @@
-package project.view.icons;
+package S30173Baltovskyi.view.icons;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Objects;
 
 public class ButtonIconHelper {

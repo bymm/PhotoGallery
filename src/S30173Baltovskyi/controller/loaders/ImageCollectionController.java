@@ -1,6 +1,5 @@
 package S30173Baltovskyi.controller.loaders;
 
-import S30173Baltovskyi.controller.workers.ImageLoaderWorker;
 import S30173Baltovskyi.model.Photo;
 import S30173Baltovskyi.model.PhotoCollection;
 import S30173Baltovskyi.view.dialogs.MyBaseDialog;
@@ -11,16 +10,15 @@ import S30173Baltovskyi.view.panels.TopPanel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 
-public class ImageCollectionLoader {
+public class ImageCollectionController {
     private final CentralPanel centralPanel;
     private final RightPanel rightPanel;
     private final TopPanel topPanel;
     private final LeftPanel leftPanel;
 
-    public ImageCollectionLoader(CentralPanel centralPanel, RightPanel rightPanel,
-                                 TopPanel topPanel, LeftPanel leftPanel) {
+    public ImageCollectionController(CentralPanel centralPanel, RightPanel rightPanel,
+                                     TopPanel topPanel, LeftPanel leftPanel) {
         this.centralPanel = centralPanel;
         this.rightPanel = rightPanel;
         this.topPanel = topPanel;
@@ -143,13 +141,8 @@ public class ImageCollectionLoader {
         );
 
         if (fileChooser.showOpenDialog(centralPanel) == JFileChooser.APPROVE_OPTION) {
-            File[] files = fileChooser.getSelectedFiles();
-
-            // Get collection to add photos to it
-            PhotoCollection selectedCollection = rightPanel.getCollectionList().getSelectedValue();
-
             // Start Copying selected files to project directory
-            new ImageLoaderWorker(files, centralPanel.getPhotoListModel()).execute();
+            new ImageCollectionBuilder(fileChooser.getSelectedFiles(), centralPanel.getPhotoListModel()).execute();
         }
     }
 

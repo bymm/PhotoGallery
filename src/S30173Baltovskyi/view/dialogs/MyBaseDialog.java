@@ -1,11 +1,13 @@
-package project.view.dialogs;
+package S30173Baltovskyi.view.dialogs;
 
-import project.view.components.MyButton;
+import S30173Baltovskyi.controller.loaders.ImageLoader;
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.view.components.MyButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import project.model.Photo;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 public class MyBaseDialog extends JDialog {
     protected JPanel buttonsPanel;
@@ -99,8 +101,8 @@ public class MyBaseDialog extends JDialog {
         dialog.setVisible(true);
     }
 
-    public static void showEditImageInfoDialog(Component parentFrame, Photo photo) {
-        MyEditImageInfoDialog dialog = new MyEditImageInfoDialog(parentFrame, photo);
+    public static void showEditImageInfoDialog(Component parentFrame, Photo photo, ImageLoader imageLoader) {
+        MyEditImageInfoDialog dialog = new MyEditImageInfoDialog(parentFrame, photo, imageLoader);
 
         dialog.pack();
         dialog.setLocationRelativeTo(parentFrame);

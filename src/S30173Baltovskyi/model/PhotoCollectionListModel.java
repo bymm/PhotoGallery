@@ -1,6 +1,6 @@
-package project.model;
+package S30173Baltovskyi.model;
 
-import project.controller.listeners.PhotoCollectionChangeListener;
+import S30173Baltovskyi.controller.listeners.PhotoCollectionChangeListener;
 
 import javax.swing.*;
 import java.io.*;
@@ -31,7 +31,14 @@ public class PhotoCollectionListModel extends AbstractListModel<PhotoCollection>
         saveList();
     }
 
+    public ArrayList<PhotoCollection> getCollectionsList() {
+        return collectionsList;
+    }
+
     public int add(PhotoCollection photoCollection) {
+        File destDir = new File("rawPhotos", photoCollection.getUuid());
+        if (!destDir.exists()) destDir.mkdirs();
+
         collectionsList.add(photoCollection);
         photoCollection.setCollectionChangeListener(this);
 
@@ -72,29 +79,43 @@ public class PhotoCollectionListModel extends AbstractListModel<PhotoCollection>
         });
     }
 
+
     public void loadList() {
         File file = new File(serFileName);
         if (!file.exists() || file.length() == 0) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(serFileName))) {
-                oos.writeObject(new ArrayList<PhotoCollection>());
-            } catch (IOException e) {
-                System.out.println("Error loading list: " + serFileName);
-                return;
-            }
+            createEmptyListFile();
         }
+        loadAndInitializeList();
+    }
 
+    private void createEmptyListFile() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(serFileName))) {
+            oos.writeObject(new ArrayList<PhotoCollection>());
+        } catch (IOException e) {
+            System.out.println("Error creating empty list file: " + serFileName);
+        }
+    }
+
+    private void loadAndInitializeList() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(serFileName))) {
             ArrayList<PhotoCollection> loadedList = (ArrayList<PhotoCollection>) ois.readObject();
             collectionsList.addAll(loadedList);
 
-            for (PhotoCollection collection : collectionsList) {
-                collection.setCollectionChangeListener(this);
-            }
+            initializeCollectionsAndPhotos();
 
             fireContentsChanged(this, 0, getSize() - 1);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found while loading list: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("I/O error while loading list: " + e.getMessage());
+        }
+    }
 
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+    private void initializeCollectionsAndPhotos() {
+        for (PhotoCollection collection : collectionsList) {
+            collection.setCollectionChangeListener(this);
+            for (Photo photo : collection.getPhotos())
+                photo.setPhotoChangeListener(collection);
         }
     }
 
@@ -103,7 +124,7 @@ public class PhotoCollectionListModel extends AbstractListModel<PhotoCollection>
             oos.writeObject(collectionsList);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error saving photoCollectionList");
+            System.out.println("Error saving: " + serFileName);
         }
     }
 }

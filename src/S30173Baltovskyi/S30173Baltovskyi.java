@@ -1,15 +1,13 @@
-package project;
+package S30173Baltovskyi;
 
-import project.controller.loaders.ImageCollectionLoader;
-import project.controller.photoprocessors.FullScreenPhotoController;
-import project.view.panels.*;
+import S30173Baltovskyi.controller.FullScreenPhotoController;
+import S30173Baltovskyi.controller.loaders.ImageCollectionController;
+import S30173Baltovskyi.view.panels.*;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class S30173Baltovskyi {
-    private SplitPane splitPane;
-    private FullScreenPhotoController fullScreenPhotoController;
 
     private S30173Baltovskyi() {
         /*---------- Frame ----------*/
@@ -20,7 +18,7 @@ public class S30173Baltovskyi {
         TopPanel topPanel = new TopPanel();
         LeftPanel leftPanel = new LeftPanel();
         RightPanel rightPanel = new RightPanel();
-        splitPane = new SplitPane(leftPanel, centralPanel, frame);
+        new SplitPane(leftPanel, centralPanel, frame);
 
         /*------------------------- Main Frame -------------------------*/
         frame.add(topPanel, BorderLayout.NORTH);
@@ -33,8 +31,8 @@ public class S30173Baltovskyi {
         frame.setVisible(true);
 
         /*---------- Loaders ----------*/
-        fullScreenPhotoController = new FullScreenPhotoController(centralPanel, rightPanel);
-        ImageCollectionLoader imageCollectionLoader = new ImageCollectionLoader(centralPanel, rightPanel, topPanel, leftPanel);
+        new FullScreenPhotoController(centralPanel, rightPanel);
+        ImageCollectionController imageCollectionLoader = new ImageCollectionController(centralPanel, rightPanel, topPanel, leftPanel);
 
         // Initialize list
         imageCollectionLoader.initializeListModel();

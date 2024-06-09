@@ -1,4 +1,4 @@
-package project.view.components;
+package S30173Baltovskyi.view.components;
 
 import javax.swing.*;
 import javax.swing.border.Border;

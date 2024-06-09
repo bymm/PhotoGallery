@@ -1,9 +1,7 @@
-package S30173Baltovskyi.controller.workers;
+package S30173Baltovskyi.controller.loaders;
 
-import S30173Baltovskyi.model.PhotoListModel;
-import S30173Baltovskyi.view.panels.CentralPanel;
 import S30173Baltovskyi.model.Photo;
-import S30173Baltovskyi.model.PhotoCollection;
+import S30173Baltovskyi.model.PhotoListModel;
 
 import javax.swing.*;
 import java.io.File;
@@ -11,13 +9,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
-public class ImageLoaderWorker extends SwingWorker<Void, Photo> {
+public class ImageCollectionBuilder extends SwingWorker<Void, Photo> {
     private final File[] files;
     private final PhotoListModel photoListModel;
 
-    public ImageLoaderWorker(File[] files, PhotoListModel photoListModel) {
+    public ImageCollectionBuilder(File[] files, PhotoListModel photoListModel) {
         this.files = files;
         this.photoListModel = photoListModel;
     }

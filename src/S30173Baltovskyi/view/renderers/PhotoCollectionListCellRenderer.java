@@ -1,6 +1,6 @@
-package project.view.renderers;
+package S30173Baltovskyi.view.renderers;
 
-import project.model.PhotoCollection;
+import S30173Baltovskyi.model.PhotoCollection;
 
 import javax.swing.*;
 import java.awt.*;

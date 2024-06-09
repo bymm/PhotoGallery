@@ -1,6 +1,6 @@
-package project.view.dialogs;
+package S30173Baltovskyi.view.dialogs;
 
-import project.view.components.MyTextAreaNoWrap;
+import S30173Baltovskyi.view.components.MyTextAreaNoWrap;
 
 import javax.swing.*;
 import java.awt.*;

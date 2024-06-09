@@ -1,9 +1,9 @@
-package project.view.panels;
+package S30173Baltovskyi.view.panels;
 
-import project.view.components.MyLabel;
-import project.view.components.MyPhotoInfoTextArea;
-import project.view.components.MyScrollPane;
-import project.model.Photo;
+import S30173Baltovskyi.model.Photo;
+import S30173Baltovskyi.view.components.MyLabel;
+import S30173Baltovskyi.view.components.MyPhotoInfoTextArea;
+import S30173Baltovskyi.view.components.MyScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
