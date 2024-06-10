@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class PhotoCollection implements Serializable, PhotoChangeListener {
@@ -21,10 +23,14 @@ public class PhotoCollection implements Serializable, PhotoChangeListener {
     private final String uuid;
     private transient PhotoCollectionChangeListener collectionChangeListener;
 
-    public PhotoCollection(String title) {
+    public PhotoCollection(String title, ArrayList<Photo> photos) {
         this.title = title;
-        this.photos = new ArrayList<>();
+        this.photos = photos;
         this.uuid = String.valueOf(UUID.randomUUID());
+    }
+
+    public PhotoCollection(String title) {
+        this(title, new ArrayList<>());
     }
 
     public void setCollectionChangeListener(PhotoCollectionChangeListener collectionChangeListener) {
@@ -77,5 +83,21 @@ public class PhotoCollection implements Serializable, PhotoChangeListener {
     private void notifyCollectionChangeListener() {
         if (collectionChangeListener != null)
             collectionChangeListener.onChangePhotoCollection(this);
+    }
+
+    public PhotoCollection search(String searchStr) {
+        if(searchStr == null || searchStr.trim() == "")
+            return this;
+        String[] split;
+        if(searchStr.contains("|"))
+            split = searchStr.split("|");
+        else
+        if(searchStr.contains("&"))
+            split = searchStr.split("&");
+        else
+            split = searchStr.split(" ");
+        List<String> words = Arrays.stream(split).map(s -> s.trim()).toList();
+        return new PhotoCollection("Search by: " + searchStr,
+                new ArrayList<>(this.photos.stream().filter(photo -> photo.isSearchMatch(words, !searchStr.contains("|"))).toList()));
     }
 }

@@ -109,4 +109,22 @@ public class Photo implements Serializable {
         if (photoChangeListener != null)
             photoChangeListener.onChangePhoto(this);
     }
+
+    boolean isSearchMatch(List<String> words, boolean and) {
+        if(and)
+            return words.stream().allMatch(word -> isSearchMatch(word));
+        return words.stream().anyMatch(word -> isSearchMatch(word));
+    }
+
+    private boolean isSearchMatch(String word) {
+        return isSearchMatch(word, this.title) ||
+                isSearchMatch(word, this.description) ||
+                tags.stream().anyMatch(tag -> isSearchMatch(word, tag));
+    }
+
+    private boolean isSearchMatch(String word, String str) {
+        if(str == null)
+            return false;
+        return str.toLowerCase().contains(word.toLowerCase());
+    }
 }
