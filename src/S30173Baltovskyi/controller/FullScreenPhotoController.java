@@ -54,7 +54,15 @@ public class FullScreenPhotoController {
         photoList.getActionMap().put("launchFullScreen", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                launchFullScreenPhotoViewer();
+                if (mainRightPanel.getCollectionList().getSelectedValue() == null) {
+                    MyBaseDialog.showMessageDialog(mainCentralPanel, "Collection is not selected",
+                            "Select the collection to enter fullscreen mode");
+                } else if (mainCentralPanel.getPhotoList().getSelectedValue() == null) {
+                    MyBaseDialog.showMessageDialog(mainCentralPanel, "Photo is not selected",
+                            "Select the photo to enter fullscreen mode");
+                } else {
+                    launchFullScreenPhotoViewer();
+                }
             }
         });
 
@@ -72,26 +80,13 @@ public class FullScreenPhotoController {
 
     private void launchFullScreenPhotoViewer() {
         PhotoCollection selectedCollection = mainRightPanel.getCollectionList().getSelectedValue();
-        if (selectedCollection == null) {
-            MyBaseDialog.showMessageDialog(thisCenterPanel, "Error", "No collection selected");
-            return;
-        }
-
         photos = selectedCollection.getPhotos();
-        if (photos == null || photos.isEmpty()) {
-            MyBaseDialog.showMessageDialog(thisCenterPanel, "Error", "No photos in collection");
-            return;
-        }
-
         curIndex = mainCentralPanel.getPhotoList().getLeadSelectionIndex();
-        if (curIndex < 0 || curIndex >= photos.size()) {
-            MyBaseDialog.showMessageDialog(thisCenterPanel, "Error", "No photos selected");
-            return;
-        }
-
         curPhoto = photos.get(curIndex);
 
         slideFrame = new JFrame("Collection: " + selectedCollection.getTitle());
+        slideFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         createCenterPanel();
         createTopPanel();
         createBottomPanel();
@@ -101,7 +96,6 @@ public class FullScreenPhotoController {
         slideFrame.add(thisBottomPanel, BorderLayout.SOUTH);
 
         slideFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        slideFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         slideFrame.setUndecorated(true);
         slideFrame.setLocationRelativeTo(null);
         slideFrame.setVisible(true);
@@ -125,14 +119,13 @@ public class FullScreenPhotoController {
     private void createCenterPanel() {
         thisCenterPanel = new JPanel(new GridBagLayout());
         thisCenterPanel.setBackground(new Color(45, 45, 48));
-        curPhotoLabel = new JLabel();
+        curPhotoLabel = new MyLabel("Loading...");
         thisCenterPanel.add(curPhotoLabel, new GridBagConstraints());
 
         thisCenterPanel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                if (thisCenterPanel.getComponentCount() > 1 && thisCenterPanel.getHeight() > 1)
-                    calculateDimsAndResize(curPhoto, curPhotoLabel);
+                calculateDimsAndResize(curPhoto, curPhotoLabel);
             }
         });
     }
@@ -223,24 +216,16 @@ public class FullScreenPhotoController {
     }
 
     private void calculateDimsAndResize(Photo photo, JLabel label) {
-        // Get view width, height
-        int viewWidth = thisCenterPanel.getWidth();
-        int viewHeight = thisCenterPanel.getHeight();
-
-        new ImageLoadingWorker(photo, label, viewWidth, viewHeight).execute();
+        new ImageLoadingWorker(photo, label).execute();
     }
 
-    static class ImageLoadingWorker extends SwingWorker<BufferedImage, Void> {
+    class ImageLoadingWorker extends SwingWorker<BufferedImage, Void> {
         private final Photo photo;
         private final JLabel imageLabel;
-        private final int viewWidth;
-        private final int viewHeight;
 
-        ImageLoadingWorker(Photo photo, JLabel imageLabel, int viewWidth, int viewHeight) {
+        ImageLoadingWorker(Photo photo, JLabel imageLabel) {
             this.photo = photo;
             this.imageLabel = imageLabel;
-            this.viewWidth = viewWidth;
-            this.viewHeight = viewHeight;
         }
 
         @Override
@@ -249,7 +234,8 @@ public class FullScreenPhotoController {
                 return ImageIO.read(new File(photo.getImagePath()));
             }
             catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error loading image " + photo.getImagePath());
+                imageLabel.setText("Failed to load image");
                 return null;
             }
         }
@@ -264,10 +250,15 @@ public class FullScreenPhotoController {
                 int imageHeight = bufferedImage.getHeight();
                 double imgAspectRatio = (double) imageWidth / imageHeight;
 
+                // Get view width, height
+                int viewWidth = thisCenterPanel.getWidth();
+                int viewHeight = thisCenterPanel.getHeight();
+
                 // No need to resize
                 if (imageWidth <= viewWidth && imageHeight <= viewHeight) {
                     // set full size icon
                     imageLabel.setIcon(new ImageIcon(bufferedImage));
+                    imageLabel.setText(null);
                     return;
                 }
 
@@ -281,8 +272,9 @@ public class FullScreenPhotoController {
                     newWidth = (int) (viewHeight * imgAspectRatio);
                 }
 
-                Image resizedImage = bufferedImage.getScaledInstance(newWidth, newHeight, Image.SCALE_AREA_AVERAGING);
+                Image resizedImage = bufferedImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
                 imageLabel.setIcon(new ImageIcon(resizedImage));
+                imageLabel.setText(null);
 
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
